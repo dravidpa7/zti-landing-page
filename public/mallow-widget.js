@@ -1,5 +1,7 @@
-/* Mallow: character-only widget, bottom-left.
+/* Mallow: character-only widget, bottom-right.
    Route-driven: each route can have its own message and motion (see ROUTES below).
+   On the home page ("/") she falls from the top of the screen on every load, hits the
+   ground, lies dazed, gets up and says "Hi, I'm Marsheee!".
    Click her -> says the current route's line (default "Hii!"). Hides after 5s without interaction with her.
    <script src="/mallow-widget.js" data-contact="/contact" defer></script> */
 (function () {
@@ -15,17 +17,17 @@
       rm = matchMedia("(prefers-reduced-motion: reduce)").matches;
     var host = document.createElement("div");
     host.style.cssText =
-      "position:fixed;left:max(16px,env(safe-area-inset-left,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:2147483000";
+      "position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:2147483000";
     var sr = host.attachShadow({ mode: "open" });
     sr.innerHTML =
       "<style>:host{display:block}" +
-      ".w{--s:150px;position:relative;width:var(--s);transform:translateX(-160%);opacity:0;visibility:hidden;transition:transform .45s cubic-bezier(.3,.7,.3,1),opacity .3s,visibility 0s .45s}" +
+      ".w{--s:150px;position:relative;width:var(--s);transform:translateX(160%);opacity:0;visibility:hidden;transition:transform .45s cubic-bezier(.3,.7,.3,1),opacity .3s,visibility 0s .45s}" +
       ".w.on{transform:none;opacity:1;visibility:visible;transition:transform .45s cubic-bezier(.3,.7,.3,1),opacity .3s}" +
       ".c{display:block;width:var(--s);height:var(--s);padding:0;margin:0;border:0;background:none;cursor:pointer}" +
       "canvas{display:block;width:100%;height:100%}" +
-      ".b{position:absolute;left:8px;bottom:calc(100% - 4px);font-family:inherit;font-weight:500;font-size:14px;line-height:1.2;letter-spacing:-.01em;background:var(--ink);color:var(--on);padding:9px 16px;border-radius:999px;text-decoration:none;white-space:nowrap;opacity:0;transform:translateY(6px);transition:opacity .2s,transform .2s;pointer-events:none}" +
+      ".b{position:absolute;right:8px;bottom:calc(100% - 4px);font-family:inherit;font-weight:500;font-size:14px;line-height:1.2;letter-spacing:-.01em;background:var(--ink);color:var(--on);padding:9px 16px;border-radius:999px;text-decoration:none;white-space:nowrap;opacity:0;transform:translateY(6px);transition:opacity .2s,transform .2s;pointer-events:none}" +
       ".b.s{opacity:1;transform:none}.b.s[href]{pointer-events:auto}" +
-      '.b:after{content:"";position:absolute;left:22px;top:100%;border:6px solid transparent;border-top-color:var(--ink);border-bottom:0}' +
+      '.b:after{content:"";position:absolute;right:22px;top:100%;border:6px solid transparent;border-top-color:var(--ink);border-bottom:0}' +
       ".c:focus-visible,.b:focus-visible{outline:2px solid var(--ink);outline-offset:3px}" +
       "@media (max-width:600px){.w{--s:120px}}" +
       "@media (prefers-reduced-motion:reduce){.w,.w.on,.b{transition:none}}</style>" +
@@ -282,6 +284,19 @@
       raf,
       t = 0,
       clk = new T.Clock();
+
+    /* intro: fall from the top, hit the ground, lie dazed, get up, introduce herself */
+    var intro = null,
+      FALL = 0.85 /* seconds in the air */,
+      LIE = 1.1 /* seconds lying on the ground */,
+      UP = 0.55; /* seconds getting up */
+    /* how far to lift the character so the rotated body rests on the ground */
+    function ground(th) {
+      var c = Math.cos(th),
+        s = Math.sin(th);
+      return 0.85 * Math.abs(c) + 1.05 * Math.abs(s) - 0.85 * c;
+    }
+
     function say(c) {
       mode = (c && c.motion) || "";
       hop = 1;
@@ -295,14 +310,28 @@
       bub.classList.add("s");
     }
     function arm_() {
+      if (intro) return;
       clearTimeout(timer);
       timer = setTimeout(hide, IDLE);
     }
     function show(c) {
+      if (intro) return;
       on = true;
       w.classList.add("on");
       say(c);
       arm_();
+      start();
+    }
+    function playIntro() {
+      intro = { s: 0 };
+      mode = "surprised";
+      hop = 0;
+      on = true;
+      clearTimeout(timer);
+      bub.classList.remove("s");
+      host.style.transform = "translateY(-" + (innerHeight + 200) + "px)";
+      w.style.transition = "none"; /* no slide-in, she just falls */
+      w.classList.add("on");
       start();
     }
     function hide() {
@@ -410,11 +439,51 @@
     function frame() {
       var dt = Math.min(clk.getDelta(), 0.05),
         q = rm ? 0 : 1,
-        m = mode;
+        m;
       t += dt;
       function sm(a, b, r) {
         return a + (b - a) * Math.min(1, dt * r);
       }
+
+      /* intro timeline: fall -> impact -> lie -> get up -> greet */
+      var iz = 0,
+        iy = 0,
+        isq = 1;
+      if (intro) {
+        intro.s += dt;
+        var ts = intro.s;
+        if (ts < FALL) {
+          /* in the air: accelerate down from above the screen, tumbling */
+          var p = ts / FALL;
+          host.style.transform =
+            "translateY(" + -(1 - p * p) * (innerHeight + 200) + "px)";
+          iz = p * Math.PI * 2.5; /* ends lying on her side */
+          iy = ground(iz);
+          mode = "surprised";
+        } else if (ts < FALL + LIE) {
+          /* impact: squash, small bounce, then lie knocked out */
+          host.style.transform = "";
+          var k = Math.min(1, (ts - FALL) / 0.35);
+          iz = Math.PI / 2;
+          iy = ground(iz) + Math.sin(k * Math.PI) * 0.3;
+          isq = 1 - 0.25 * Math.sin(Math.min(1, (ts - FALL) / 0.3) * Math.PI);
+          mode = "sleepy";
+        } else if (ts < FALL + LIE + UP) {
+          /* wake up and stand */
+          var q2 = (ts - FALL - LIE) / UP,
+            e = 1 - Math.pow(1 - q2, 3);
+          iz = (Math.PI / 2) * (1 - e);
+          iy = ground(iz) + Math.sin(q2 * Math.PI) * 0.3;
+          mode = "";
+        } else {
+          intro = null;
+          host.style.transform = "";
+          w.style.transition = "";
+          say({ say: "Hi, I'm Marsheee!", motion: "hi" });
+          arm_();
+        }
+      }
+      m = mode;
       hop = Math.max(0, hop - dt * 0.8);
       /* the pose each motion aims for; everything eases toward it */
       var ey = 1,
@@ -489,13 +558,23 @@
           q +
         jp;
       if (m === "sleepy") y *= 0.2;
-      ch.position.y = y;
-      sh.scale.setScalar(1 - y * 0.4);
+      if (intro) {
+        /* intro overrides: rotate about her feet, keep her centred and resting on the ground */
+        ch.position.x = 0.85 * Math.sin(iz);
+        ch.position.y = iy;
+        ch.rotation.y = 0;
+        ch.rotation.x = 0;
+        ch.rotation.z = iz;
+      } else {
+        ch.position.x = 0;
+        ch.position.y = y;
+        ch.rotation.y = mx * 0.35;
+        ch.rotation.x = sm(ch.rotation.x, rx, 8);
+        ch.rotation.z = sm(ch.rotation.z, rz, 8);
+      }
+      sh.scale.setScalar(Math.max(0.4, 1 - ch.position.y * 0.4));
       var sq = 1 + Math.sin(t * 6) * 0.03 * q * (m && m !== "sleepy" ? 1 : 0.3);
-      body.scale.set(1 / Math.sqrt(sq), sq, 1 / Math.sqrt(sq));
-      ch.rotation.y = mx * 0.35;
-      ch.rotation.x = sm(ch.rotation.x, rx, 8);
-      ch.rotation.z = sm(ch.rotation.z, rz, 8);
+      body.scale.set(1 / Math.sqrt(sq), sq * isq, 1 / Math.sqrt(sq));
       armP.rotation.z = sm(armP.rotation.z, aR, 10);
       armQ.rotation.z = sm(armQ.rotation.z, aL, 10);
       ["x", "y", "z"].forEach(function (k, i) {
@@ -534,8 +613,10 @@
       cancelAnimationFrame(raf);
     }
 
+    /* home page only: fall in on every load. Everywhere else: the normal route behaviour */
     var c0 = match(location.pathname, location.hash);
-    show(c0 && c0.onLoad ? c0 : null);
+    if (norm(location.pathname) === "/" && !rm) playIntro();
+    else show(c0 && c0.onLoad ? c0 : null);
   }
 
   if (window.THREE) boot();
