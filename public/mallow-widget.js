@@ -541,7 +541,9 @@
   if (window.THREE) boot();
   else {
     var s = document.createElement("script");
-    s.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
+    s.src =
+      (CS && CS.dataset.three) ||
+      "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"; /* pinned: r128 */
     s.onload = boot;
     document.head.appendChild(s);
   }
