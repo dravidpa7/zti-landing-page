@@ -18,7 +18,7 @@
       "tag": "School management",
       "text": "One place for students, teachers and administrators. Attendance, fees, results and parent updates, with a view for each role.",
       "tone": "light",
-      "image": "",
+      "image": "/images/crm.png",
       "points": [
         "Attendance, fees and results in one record",
         "A separate view for students, teachers and administrators",
@@ -33,7 +33,7 @@
       "tag": "Tool calling",
       "text": "Agents that call your tools and finish the task. Define the tools once, set the limits, and let the agent do the routine work.",
       "tone": "dark",
-      "image": "",
+      "image": "/images/agents.png",
       "points": [
         "Define each tool once, with typed inputs",
         "Set limits on what an agent may call",
@@ -48,7 +48,7 @@
       "tag": "Build",
       "text": "Small, typed libraries so your team can add our products to its own apps in an afternoon.",
       "tone": "warm",
-      "image": "",
+      "image": "/images/sdk.png",
       "points": [
         "Small, typed libraries",
         "Clear errors and safe retries built in",
