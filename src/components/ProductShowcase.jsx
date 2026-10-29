@@ -1,7 +1,8 @@
 import { useRef } from 'react'
-import { m, useScroll, useTransform, useReducedMotion } from 'framer-motion'
+import { m, useScroll, useTransform, useReducedMotion, useSpring } from 'framer-motion'
 import { reveal, ease } from '../utils/motion'
 import Button from './Button'
+import IconBadge from './IconBadge'
 
 // Panel colours per tone (set "tone" in data.json). Classes are listed in full so Tailwind keeps them.
 const tones = {
@@ -30,8 +31,18 @@ export function ProductPanel({ product: p, className = '' }) {
   const reduce = useReducedMotion()
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
   const y = useTransform(scrollYProgress, [0, 1], [reduce ? 0 : 40, reduce ? 0 : -40])
+  // Micro: panel tilts a few degrees toward the mouse (mouse only, off for reduced motion).
+  const rx = useSpring(0, { stiffness: 150, damping: 18 })
+  const ry = useSpring(0, { stiffness: 150, damping: 18 })
+  const onMove = (e) => {
+    if (reduce || e.pointerType !== 'mouse') return
+    const r = e.currentTarget.getBoundingClientRect()
+    ry.set(((e.clientX - r.left) / r.width - 0.5) * 8)
+    rx.set(-((e.clientY - r.top) / r.height - 0.5) * 8)
+  }
+  const onLeave = () => { rx.set(0); ry.set(0) }
   return (
-    <m.div ref={ref} initial={{ opacity: 0, scale: 0.96, y: 24 }} whileInView={{ opacity: 1, scale: 1, y: 0 }}
+    <m.div ref={ref} style={{ rotateX: rx, rotateY: ry, transformPerspective: 900 }} onPointerMove={onMove} onPointerLeave={onLeave} initial={{ opacity: 0, scale: 0.96, y: 24 }} whileInView={{ opacity: 1, scale: 1, y: 0 }}
       viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.8, ease }}
       className={`relative aspect-square w-full overflow-hidden rounded-[2rem] ${t.panel} ${className}`}>
       {p.image ? (
@@ -48,6 +59,7 @@ export default function ProductShowcase({ product: p }) {
     <section id={`product-${p.id}`} className="bg-white py-16 md:py-28">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 md:grid-cols-12">
         <m.div {...reveal} className="md:col-span-5">
+          <IconBadge name={p.icon} className="mb-6" />
           <p className="mb-4">{p.tag}</p>
           <h3 className="text-4xl font-medium tracking-[-0.03em] md:text-5xl">{p.name}</h3>
           <p className="mt-5 max-w-md text-lg leading-relaxed text-ink/70">{p.text}</p>

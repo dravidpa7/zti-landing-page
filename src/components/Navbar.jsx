@@ -4,6 +4,7 @@ import { AnimatePresence, m, useScroll, useMotionValueEvent } from 'framer-motio
 import Mark from './Mark'
 import Button from './Button'
 import { ease } from '../utils/motion'
+import { icons } from '../utils/icons'
 import { useContent } from '../context/ContentContext'
 
 const Chevron = ({ open }) => (
@@ -30,9 +31,9 @@ export default function Navbar() {
   }, [])
 
   const menus = {
-    products: { label: 'Products', to: '/products', heading: 'Explore what we build', list: 'Products', items: products.map((p) => ({ label: p.name, to: `/products/${p.id}` })) },
-    services: { label: 'Services', to: '/services', heading: 'How we can help your team', list: 'Services', items: services.map((s) => ({ label: s.name, to: `/services/${s.id}` })) },
-    blogs: { label: 'Blogs', to: '/blogs', heading: 'Notes from our engineers', list: 'Latest posts', items: blogs.slice(0, 4).map((b) => ({ label: b.title, to: `/blogs/${b.id}` })) },
+    products: { label: 'Products', to: '/products', heading: 'Explore what we build', list: 'Products', items: products.map((p) => ({ label: p.name, to: `/products/${p.id}`, icon: p.icon })) },
+    services: { label: 'Services', to: '/services', heading: 'How we can help your team', list: 'Services', items: services.map((s) => ({ label: s.name, to: `/services/${s.id}`, icon: s.icon })) },
+    blogs: { label: 'Blogs', to: '/blogs', heading: 'Notes from our engineers', list: 'Latest posts', items: blogs.slice(0, 4).map((b) => ({ label: b.title, to: `/blogs/${b.id}`, icon: 'FileText' })) },
   }
   const plain = [['Careers', '/careers'], ['Corporate training', '/training']]
   const cur = open && menus[open]
@@ -78,7 +79,7 @@ export default function Navbar() {
                 <p className="mb-4 text-sm text-ink/60">{cur.list}</p>
                 <ul className="space-y-1">
                   {cur.items.map((i) => (
-                    <li key={i.to}><Link to={i.to} className="block py-1 text-lg transition-transform duration-200 hover:translate-x-1">{i.label}</Link></li>
+                    <li key={i.to}><Link to={i.to} className="group flex items-center gap-3 py-1 text-lg transition-transform duration-200 hover:translate-x-1">{icons[i.icon] && (() => { const I = icons[i.icon]; return <I size={18} strokeWidth={1.6} className="shrink-0 text-ink/50 transition-transform duration-200 group-hover:scale-125 group-hover:text-ink" /> })()}{i.label}</Link></li>
                   ))}
                 </ul>
               </div>

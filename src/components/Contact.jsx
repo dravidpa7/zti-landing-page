@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { m } from 'framer-motion'
+import { Send, User, Building2, Check } from 'lucide-react'
 import { reveal } from '../utils/motion'
 import { useContent } from '../context/ContentContext'
 import { contactService } from '../services/contactService'
@@ -46,7 +47,7 @@ export default function Contact() {
         <m.div {...reveal} className="md:col-span-5 md:col-start-8">
           {status === 'done' || status === 'mail' ? (
             <div role="status" className="space-y-3 text-lg">
-              <p className="text-2xl font-medium">{status === 'done' ? `Thank you, ${f.name}.` : 'Almost done.'}</p>
+              <p className="flex items-center gap-3 text-2xl font-medium"><m.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 14 }} className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white"><Check size={18} /></m.span>{status === 'done' ? `Thank you, ${f.name}.` : 'Almost done.'}</p>
               <p>{status === 'done' ? note : `Your email app should have opened with your message. Press send there to finish. ${note}`}</p>
               <button type="button" onClick={() => { setF(empty); setStatus('idle') }} className="underline underline-offset-4">Send another enquiry</button>
             </div>
@@ -55,7 +56,7 @@ export default function Contact() {
               <div role="group" aria-label="Enquiry type" className="inline-flex rounded-full bg-black/5 p-1 text-[15px]">
                 {['Individual', 'Organisation'].map((t) => (
                   <button key={t} type="button" aria-pressed={type === t} onClick={() => setType(t)}
-                    className={`rounded-full px-5 py-2 transition-colors duration-200 ${type === t ? 'bg-ink text-white' : 'hover:bg-black/5'}`}>{t}</button>
+                    className={`inline-flex items-center gap-2 rounded-full px-5 py-2 transition-colors duration-200 ${type === t ? 'bg-ink text-white' : 'hover:bg-black/5'}`}>{t === 'Individual' ? <User size={16} /> : <Building2 size={16} />}{t}</button>
                 ))}
               </div>
               <Field><span className="sr-only">Name</span>
@@ -78,8 +79,8 @@ export default function Contact() {
               <Field><span className="sr-only">What do you need?</span>
                 <textarea required rows={4} className={base} placeholder="What do you need?" value={f.message} onChange={set('message')} /></Field>
               <m.button type="submit" disabled={status === 'sending'} whileHover={{ y: -2 }} whileTap={{ scale: 0.96 }} transition={{ duration: 0.2 }}
-                className="inline-flex items-center rounded-full bg-ink px-6 py-3 text-base font-medium text-white disabled:opacity-60">
-                {status === 'sending' ? 'Sending…' : 'Submit'}
+                className="group inline-flex items-center rounded-full bg-ink px-6 py-3 text-base font-medium text-white disabled:opacity-60">
+                {status === 'sending' ? 'Sending…' : <>Submit<Send size={16} className="ml-2 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-1" /></>}
               </m.button>
               {status === 'error' && <p role="alert" className="text-brand-red">Something went wrong. Please try again, or email {toEmail}.</p>}
               <p className="text-sm text-ink/70">Note: {note}</p>

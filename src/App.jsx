@@ -4,6 +4,7 @@ import { useContent } from './context/ContentContext'
 import ScrollProgress from './components/ScrollProgress'
 import ScrollManager from './components/ScrollManager'
 import Navbar from './components/Navbar'
+import ScrollTop from './components/ScrollTop'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -34,5 +35,6 @@ export default function App() {
       <Contact />
     </m.main>
     <Footer />
+    <ScrollTop />
   </>)
 }

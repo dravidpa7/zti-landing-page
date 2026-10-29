@@ -3,3 +3,10 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 @keyframes spin-slow { to { transform: rotate(360deg); } }
 .spin-slow { animation: spin-slow 180s linear infinite; will-change: transform; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .spin-slow { animation: none; } }
+
+@keyframes caret { 50% { opacity: 0; } }
+.animate-caret { animation: caret 1s steps(1) infinite; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+.marquee { animation: marquee 50s linear infinite; }
+.marquee:hover { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .marquee, .animate-caret { animation: none; } }

@@ -3,6 +3,7 @@ import { m, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 import Mark from './Mark'
 import Button from './Button'
 import DashRing from './DashRing'
+import Typewriter from './Typewriter'
 import { ease } from '../utils/motion'
 const fade = (d) => ({ initial: { opacity: 0, y: 24 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.8, delay: d, ease } })
 const wordsIn = { v: { transition: { staggerChildren: 0.07, delayChildren: 0.15 } } }
@@ -28,7 +29,8 @@ export default function Hero({ company }) {
             </span>
           ))}
         </m.h1>
-        <m.div {...fade(0.6)} className="mt-10"><Button href="#contact">Talk to us</Button></m.div>
+        <m.p {...fade(0.5)} className="mt-6 min-h-8 text-xl text-ink/70">We build <Typewriter texts={company.typed} className="text-ink" /></m.p>
+        <m.div {...fade(0.6)} className="mt-8"><Button href="#contact">Talk to us</Button></m.div>
       </m.div>
     </section>
   )
