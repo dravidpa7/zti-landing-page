@@ -28,7 +28,7 @@ export function ProductDetail() {
         <m.div {...reveal} className="md:col-span-5">
           <p className="mb-4">What it does</p>
           <ul className="space-y-4 text-xl">{p.points.map((t) => <li key={t} className="flex items-start gap-3 border-t border-black/10 pt-4"><Check size={22} className="mt-1 shrink-0 text-brand-blue" />{t}</li>)}</ul>
-          <Button to="/#contact" className="mt-10">Talk to us</Button>
+          <Button to="/contact" className="mt-10">Talk to us</Button>
         </m.div>
         <ProductPanel product={p} className="md:col-span-6 md:col-start-7" />
       </div>

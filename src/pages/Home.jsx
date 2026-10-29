@@ -5,6 +5,7 @@ import Products from '../components/Products'
 import IconStrip from '../components/IconStrip'
 import Services from '../components/Services'
 import Blogs from '../components/Blogs'
+import HomeContactCta from '../components/HomeContactCta'
 export default function Home() {
   const c = useContent()
   return (<>
@@ -14,5 +15,6 @@ export default function Home() {
     <IconStrip />
     <Services items={c.services} intro={c.company.intro} />
     <Blogs items={c.blogs} />
+    <HomeContactCta />
   </>)
 }

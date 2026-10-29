@@ -25,7 +25,7 @@ export function ServiceDetail() {
     <PageHeader eyebrow="Service" title={s.name} intro={s.text} />
     <section className="bg-white py-16 md:py-24"><div className="mx-auto max-w-6xl px-5">
       <m.ul {...reveal} className="max-w-xl space-y-4 text-xl">{s.points.map((t) => <li key={t} className="flex items-start gap-3 border-t border-black/10 pt-4"><Check size={22} className="mt-1 shrink-0 text-brand-blue" />{t}</li>)}</m.ul>
-      <Button to="/#contact" className="mt-10">Start a project</Button>
+      <Button to="/contact" className="mt-10">Start a project</Button>
       <p className="mb-4 mt-24">Other services</p>
       <RowList rows={services.filter((x) => x.id !== id).map((o) => ({ meta: 'Service', title: o.name, text: o.text, icon: o.icon, to: `/services/${o.id}` }))} />
     </div></section>

@@ -30,7 +30,7 @@ export default function Hero({ company }) {
           ))}
         </m.h1>
         <m.p {...fade(0.5)} className="mt-6 min-h-8 text-xl text-ink/70">We build <Typewriter texts={company.typed} className="text-ink" /></m.p>
-        <m.div {...fade(0.6)} className="mt-8"><Button href="#contact">Talk to us</Button></m.div>
+        <m.div {...fade(0.6)} className="mt-8"><Button to="/contact">Talk to us</Button></m.div>
       </m.div>
     </section>
   )

@@ -57,7 +57,7 @@ export default function Navbar() {
           ))}
         </ul>
         <div className="flex items-center gap-3">
-          <Button to="/#contact" className="hidden !px-5 !py-2 text-[15px] md:inline-flex">Contact</Button>
+          <Button to="/contact" className="hidden !px-5 !py-2 text-[15px] md:inline-flex">Contact</Button>
           <button type="button" aria-label="Menu" aria-expanded={mobile} onClick={() => setMobile(!mobile)} className="p-2 md:hidden">
             <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
               {mobile ? <path d="M5 5l12 12M17 5 5 17" /> : <path d="M3 7h16M3 15h16" />}
@@ -89,7 +89,7 @@ export default function Navbar() {
         {mobile && (
           <m.ul key="mobile" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2, ease }} className="absolute left-0 top-full w-full space-y-1 border-b border-black/5 bg-white px-5 py-6 text-2xl font-medium md:hidden">
-            {[...Object.values(menus).map((mn) => [mn.label, mn.to]), ...plain, ['Contact', '/#contact']].map(([l, to]) => (
+            {[...Object.values(menus).map((mn) => [mn.label, mn.to]), ...plain, ['Contact', '/contact']].map(([l, to]) => (
               <li key={to}><Link to={to} className="block py-2">{l}</Link></li>
             ))}
           </m.ul>

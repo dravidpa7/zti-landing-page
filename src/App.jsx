@@ -30,9 +30,9 @@ export default function App() {
         <Route path="/blogs/:id" element={<BlogPost />} />
         <Route path="/careers" element={<Careers />} />
         <Route path="/training" element={<Training />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <Contact />
     </m.main>
     <Footer />
     <ScrollTop />

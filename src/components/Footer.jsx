@@ -8,7 +8,7 @@ export default function Footer() {
     ['Products', '/products', products.map((p) => [p.name, `/products/${p.id}`])],
     ['Services', '/services', services.map((s) => [s.name, `/services/${s.id}`])],
     ['Blogs', '/blogs', blogs.slice(0, 3).map((b) => [b.title, `/blogs/${b.id}`])],
-    ['Company', null, [['Careers', '/careers'], ['Corporate training', '/training'], ['Contact', '/#contact']]],
+    ['Company', null, [['Careers', '/careers'], ['Corporate training', '/training'], ['Contact', '/contact']]],
   ]
   return (
     <footer className="overflow-hidden bg-ink px-5 pb-6 pt-20 text-white">
