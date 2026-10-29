@@ -12,7 +12,13 @@
       "tag": "School management",
       "text": "One place for students, teachers and administrators. Attendance, fees, results and parent updates, with a view for each role.",
       "tone": "light",
-      "image": ""
+      "image": "",
+      "points": [
+        "Attendance, fees and results in one record",
+        "A separate view for students, teachers and administrators",
+        "Parent updates sent from the same place",
+        "Reports the school office can export"
+      ]
     },
     {
       "id": "agents",
@@ -20,7 +26,13 @@
       "tag": "Tool calling",
       "text": "Agents that call your tools and finish the task. Define the tools once, set the limits, and let the agent do the routine work.",
       "tone": "dark",
-      "image": ""
+      "image": "",
+      "points": [
+        "Define each tool once, with typed inputs",
+        "Set limits on what an agent may call",
+        "Every call is logged and can be reviewed",
+        "Connects to the systems you already run"
+      ]
     },
     {
       "id": "sdk",
@@ -28,21 +40,48 @@
       "tag": "Build",
       "text": "Small, typed libraries so your team can add our products to its own apps in an afternoon.",
       "tone": "warm",
-      "image": ""
+      "image": "",
+      "points": [
+        "Small, typed libraries",
+        "Clear errors and safe retries built in",
+        "A working example on the first page",
+        "Versioned releases with a changelog"
+      ]
     }
   ],
   "services": [
     {
       "name": "Web and mobile apps",
-      "text": "Product design and engineering, from first screen to release."
+      "text": "Product design and engineering, from first screen to release.",
+      "id": "web-apps",
+      "points": [
+        "Product design and engineering together",
+        "Web and mobile, one team",
+        "Release plans you can follow",
+        "Hand-over with documentation"
+      ]
     },
     {
       "name": "AI agents and automation",
-      "text": "Tool-calling agents wired into the systems you already run."
+      "text": "Tool-calling agents wired into the systems you already run.",
+      "id": "agents-automation",
+      "points": [
+        "Pick the routine work worth automating",
+        "Agents wired into your existing tools",
+        "Limits and review steps agreed up front",
+        "Monitoring after launch"
+      ]
     },
     {
       "name": "Integrations and SDKs",
-      "text": "APIs, libraries and the documentation that makes them usable."
+      "text": "APIs, libraries and the documentation that makes them usable.",
+      "id": "integrations-sdks",
+      "points": [
+        "APIs designed around your use case",
+        "Typed client libraries",
+        "Documentation with working examples",
+        "Support while your team adopts them"
+      ]
     }
   ],
   "blogs": [
@@ -51,21 +90,71 @@
       "title": "Why schools outgrow spreadsheets",
       "date": "2026-10-12",
       "readTime": "4 min",
-      "excerpt": "Three signs it is time to move student records out of shared sheets, and what to move first."
+      "excerpt": "Three signs it is time to move student records out of shared sheets, and what to move first.",
+      "body": [
+        "Shared spreadsheets work until the second person edits them. Then attendance, fees and results start to disagree with each other.",
+        "Start with the records that change daily, usually attendance, and move them first. Give each role only the screen it needs."
+      ]
     },
     {
       "id": "tool-calling",
       "title": "Tool calling, without the magic",
       "date": "2026-09-28",
       "readTime": "6 min",
-      "excerpt": "How an agent decides which tool to call, and how we keep that decision predictable."
+      "excerpt": "How an agent decides which tool to call, and how we keep that decision predictable.",
+      "body": [
+        "An agent chooses a tool by reading its name, its description and its inputs. Clear descriptions make the choice predictable.",
+        "We keep the tool list short, type every input, and log each call so a person can review what the agent did."
+      ]
     },
     {
       "id": "sdk-design",
       "title": "Designing an SDK people finish reading",
       "date": "2026-09-05",
       "readTime": "5 min",
-      "excerpt": "Small surface, honest errors, one working example on the first page."
+      "excerpt": "Small surface, honest errors, one working example on the first page.",
+      "body": [
+        "A good SDK has a small surface. Every extra option is something a new user has to read before they succeed.",
+        "Put one working example on the first page, and make errors say what to change."
+      ]
     }
-  ]
+  ],
+  "careers": [
+    {
+      "id": "fullstack",
+      "title": "Full-stack Engineer",
+      "type": "Full time",
+      "text": "Build the CRM and our web products in React and Node."
+    },
+    {
+      "id": "agents-eng",
+      "title": "AI Agents Engineer",
+      "type": "Full time",
+      "text": "Design tool-calling agents and the limits that keep them safe."
+    },
+    {
+      "id": "designer",
+      "title": "Product Designer",
+      "type": "Full time",
+      "text": "Shape simple, clear interfaces for schools and developers."
+    }
+  ],
+  "careersIntro": "We are a small team that ships its own products. If you like clear problems and short feedback loops, write to us.",
+  "training": {
+    "intro": "Practical sessions for engineering teams, taught by the people who build these systems.",
+    "programs": [
+      {
+        "name": "AI agents and tool calling",
+        "text": "How agents choose tools, how to set limits, and how to test them."
+      },
+      {
+        "name": "SDK and API engineering",
+        "text": "Designing typed libraries and APIs other developers enjoy using."
+      },
+      {
+        "name": "Modern web development",
+        "text": "React, Tailwind and performance habits for production sites."
+      }
+    ]
+  }
 }
