@@ -1,26 +1,71 @@
 {
-  "company": { "name": "Aaryan Tech", "tagline": "Software for schools, agents and builders.",
+  "company": {
+    "name": "Aaryan Tech",
+    "tagline": "Software for schools, agents and builders.",
     "intro": "We are a technology company. We take on client projects and we build our own products.",
-    "email": "hello@aaryan.tech" },
+    "email": "hello@aaryan.tech"
+  },
   "products": [
-    { "id": "crm", "name": "Aaryan CRM", "tag": "School management",
-      "text": "One place for students, teachers and administrators. Attendance, fees, results and parent updates, with a view for each role." },
-    { "id": "agents", "name": "Aaryan Agents", "tag": "Tool calling",
-      "text": "Agents that call your tools and finish the task. Define the tools once, set the limits, and let the agent do the routine work." },
-    { "id": "sdk", "name": "Aaryan SDKs", "tag": "Build",
-      "text": "Small, typed libraries so your team can add our products to its own apps in an afternoon." }
+    {
+      "id": "crm",
+      "name": "Aaryan CRM",
+      "tag": "School management",
+      "text": "One place for students, teachers and administrators. Attendance, fees, results and parent updates, with a view for each role.",
+      "tone": "light",
+      "image": ""
+    },
+    {
+      "id": "agents",
+      "name": "Aaryan Agents",
+      "tag": "Tool calling",
+      "text": "Agents that call your tools and finish the task. Define the tools once, set the limits, and let the agent do the routine work.",
+      "tone": "dark",
+      "image": ""
+    },
+    {
+      "id": "sdk",
+      "name": "Aaryan SDKs",
+      "tag": "Build",
+      "text": "Small, typed libraries so your team can add our products to its own apps in an afternoon.",
+      "tone": "warm",
+      "image": ""
+    }
   ],
   "services": [
-    { "name": "Web and mobile apps", "text": "Product design and engineering, from first screen to release." },
-    { "name": "AI agents and automation", "text": "Tool-calling agents wired into the systems you already run." },
-    { "name": "Integrations and SDKs", "text": "APIs, libraries and the documentation that makes them usable." }
+    {
+      "name": "Web and mobile apps",
+      "text": "Product design and engineering, from first screen to release."
+    },
+    {
+      "name": "AI agents and automation",
+      "text": "Tool-calling agents wired into the systems you already run."
+    },
+    {
+      "name": "Integrations and SDKs",
+      "text": "APIs, libraries and the documentation that makes them usable."
+    }
   ],
   "blogs": [
-    { "id": "why-school-crm", "title": "Why schools outgrow spreadsheets", "date": "2026-10-12", "readTime": "4 min",
-      "excerpt": "Three signs it is time to move student records out of shared sheets, and what to move first." },
-    { "id": "tool-calling", "title": "Tool calling, without the magic", "date": "2026-09-28", "readTime": "6 min",
-      "excerpt": "How an agent decides which tool to call, and how we keep that decision predictable." },
-    { "id": "sdk-design", "title": "Designing an SDK people finish reading", "date": "2026-09-05", "readTime": "5 min",
-      "excerpt": "Small surface, honest errors, one working example on the first page." }
+    {
+      "id": "why-school-crm",
+      "title": "Why schools outgrow spreadsheets",
+      "date": "2026-10-12",
+      "readTime": "4 min",
+      "excerpt": "Three signs it is time to move student records out of shared sheets, and what to move first."
+    },
+    {
+      "id": "tool-calling",
+      "title": "Tool calling, without the magic",
+      "date": "2026-09-28",
+      "readTime": "6 min",
+      "excerpt": "How an agent decides which tool to call, and how we keep that decision predictable."
+    },
+    {
+      "id": "sdk-design",
+      "title": "Designing an SDK people finish reading",
+      "date": "2026-09-05",
+      "readTime": "5 min",
+      "excerpt": "Small surface, honest errors, one working example on the first page."
+    }
   ]
 }

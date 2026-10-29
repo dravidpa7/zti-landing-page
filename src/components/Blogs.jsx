@@ -3,7 +3,7 @@ import { reveal, line } from '../utils/motion'
 import { formatDate } from '../utils/format'
 export default function Blogs({ items }) {
   return (
-    <section id="blogs" className="bg-tint py-28 md:py-48">
+    <section id="blogs" className="bg-white py-28 md:py-48">
       <div className="mx-auto max-w-6xl px-5">
         <m.h2 {...reveal} className="text-4xl font-medium tracking-[-0.03em] md:text-7xl">Blogs</m.h2>
         <div className="mt-16 border-b border-black/10">
