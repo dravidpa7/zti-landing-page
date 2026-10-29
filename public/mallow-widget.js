@@ -1,6 +1,6 @@
 /* Mallow: character-only widget, bottom-left.
-   Click her -> "Hii!" | click Home -> "Hii!" | click Contact -> "Reach out to us"
-   Hides after 5s without interaction with her. Needs no framework.
+   Route-driven: each route can have its own message and motion (see ROUTES below).
+   Click her -> says the current route's line (default "Hii!"). Hides after 5s without interaction with her.
    <script src="/mallow-widget.js" data-contact="/contact" defer></script> */
 (function () {
   if (window.__mallow) return;
@@ -134,6 +134,7 @@
     }
     var eL = eye(-0.45),
       eR = eye(0.45);
+    var BL = [];
     [-0.64, 0.64].forEach(function (x) {
       var b = new T.Mesh(
         new T.CircleGeometry(0.17, 20),
@@ -146,11 +147,23 @@
       b.position.set(x, -0.24, 0.935);
       b.rotation.y = x * 0.15;
       body.add(b);
+      BL.push(b);
     });
     var mo = new T.Mesh(new T.TorusGeometry(0.1, 0.022, 8, 16, Math.PI), dk);
     mo.rotation.z = Math.PI;
     mo.position.set(0, -0.12, 0.955);
     body.add(mo);
+    var mHalf = new T.Mesh(
+      new T.CircleGeometry(0.13, 20, Math.PI, Math.PI),
+      dk,
+    );
+    mHalf.position.set(0, -0.07, 0.955);
+    mHalf.visible = false;
+    body.add(mHalf);
+    var mO = new T.Mesh(new T.CircleGeometry(0.07, 20), dk);
+    mO.position.set(0, -0.14, 0.955);
+    mO.visible = false;
+    body.add(mO);
     var bow = new T.Group(),
       pk = M(0xf58fa3);
     [-1, 1].forEach(function (s) {
@@ -175,9 +188,92 @@
     armP.position.set(1.0, 0, 0.1);
     armP.rotation.z = 0.12;
     body.add(armP);
+    var armQ = new T.Group(),
+      arm2 = ol(
+        new T.Mesh(new T.SphereGeometry(0.2, 16, 12), M(0xfff1ea)),
+        1.12,
+      );
+    arm2.scale.set(1, 1.8, 1);
+    arm2.position.y = -0.3;
+    armQ.add(arm2);
+    armQ.position.set(-1.0, 0, 0.1);
+    armQ.rotation.z = -0.12;
+    armQ.scale.setScalar(0.001);
+    body.add(armQ);
 
-    /* state: mode 0 = idle, 1 = hi, 2 = reach out */
-    var mode = 0,
+    /* ROUTES: path -> what she does. Keys: '/pricing', '/blog/*' (prefix), '#contact', '*' (fallback).
+       Value: { say, motion, href, onLoad }. motion: hi, reach, hop, happy, shy, surprised, wink, sleepy. Add yours with window.MALLOW_ROUTES or Mallow.configure({...}) */
+    var ROUTES = {
+      "/": { say: "Hii!", motion: "hi" },
+      "/products": { say: "Take a look around!", motion: "hop", onLoad: true },
+      "/products/*": {
+        say: "Interested? Reach out to us →",
+        motion: "reach",
+        href: CONTACT,
+        onLoad: true,
+      },
+      "/services": {
+        say: "What can we build for you?",
+        motion: "happy",
+        onLoad: true,
+      },
+      "/services/*": {
+        say: "Let’s talk about it →",
+        motion: "reach",
+        href: CONTACT,
+        onLoad: true,
+      },
+      "/blogs": { say: "Fresh reads!", motion: "hop", onLoad: true },
+      "/blogs/*": { say: "Hope this helps!", motion: "shy", onLoad: true },
+      "/careers": { say: "Join our team!", motion: "happy", onLoad: true },
+      "/training": { say: "Ready to learn?", motion: "hi", onLoad: true },
+      "/contact": {
+        say: "Reach out to us →",
+        motion: "reach",
+        href: CONTACT,
+        onLoad: true,
+      },
+      "*": {
+        say: "Oh no! Take me home →",
+        motion: "surprised",
+        href: "/",
+        onLoad: true,
+      } /* not-found page */,
+    };
+    var HI = { say: "Hii!", motion: "hi" };
+    function norm(p) {
+      p = (p || "/").toLowerCase().replace(/\/+$/, "");
+      return p || "/";
+    }
+    function merge(o) {
+      for (var k in o)
+        ROUTES[
+          k === "*" || k.charAt(0) === "#"
+            ? k
+            : norm(k.replace(/\/\*$/, "")) + (/\/\*$/.test(k) ? "/*" : "")
+        ] = o[k];
+    }
+    if (window.MALLOW_ROUTES) merge(window.MALLOW_ROUTES);
+    function match(path, hash, strict) {
+      path = norm(path);
+      hash = (hash || "").toLowerCase();
+      if (hash && ROUTES[path + hash] !== undefined) return ROUTES[path + hash];
+      if (hash && ROUTES[hash] !== undefined) return ROUTES[hash];
+      if (hash && strict) return null;
+      if (ROUTES[path] !== undefined) return ROUTES[path];
+      var best = "",
+        k;
+      for (k in ROUTES)
+        if (
+          k.slice(-2) === "/*" &&
+          (path + "/").indexOf(k.slice(0, -1)) === 0 &&
+          k.length > best.length
+        )
+          best = k;
+      return best ? ROUTES[best] : strict ? null : ROUTES["*"] || null;
+    }
+
+    var mode = "",
       on = false,
       timer,
       hop = 0,
@@ -186,15 +282,15 @@
       raf,
       t = 0,
       clk = new T.Clock();
-    function say(m) {
-      mode = m;
+    function say(c) {
+      mode = (c && c.motion) || "";
       hop = 1;
-      if (!m) {
+      if (!c || !c.say) {
         bub.classList.remove("s");
         return;
       }
-      bub.textContent = m === 1 ? "Hii!" : "Reach out to us →";
-      if (m === 2) bub.setAttribute("href", CONTACT);
+      bub.textContent = c.say;
+      if (c.href) bub.setAttribute("href", c.href);
       else bub.removeAttribute("href");
       bub.classList.add("s");
     }
@@ -202,10 +298,10 @@
       clearTimeout(timer);
       timer = setTimeout(hide, IDLE);
     }
-    function show(m) {
+    function show(c) {
       on = true;
       w.classList.add("on");
-      say(m);
+      say(c);
       arm_();
       start();
     }
@@ -214,13 +310,13 @@
       clearTimeout(timer);
       w.classList.remove("on");
       bub.classList.remove("s");
-      mode = 0;
+      mode = "";
       setTimeout(function () {
         if (!on) stop();
       }, 700);
     }
     btn.addEventListener("click", function () {
-      show(1);
+      show(match(location.pathname, location.hash) || HI);
     });
     ["pointermove", "focusin"].forEach(function (ev) {
       w.addEventListener(ev, function () {
@@ -231,41 +327,39 @@
       mx = (e.clientX / innerWidth) * 2 - 1;
     });
 
-    /* site triggers: Home and Contact links (clicks and route changes) */
-    function kind(el) {
-      var a = el.closest && el.closest("a,[data-mallow]");
-      if (!a) return 0;
-      var d = a.getAttribute("data-mallow");
-      if (d === "home") return 1;
-      if (d === "contact") return 2;
-      var tx = (a.textContent || "").trim().toLowerCase();
-      var same = a.origin === location.origin,
-        p = same ? a.pathname.replace(/\/+$/, "") : "";
-      if (
-        tx === "contact" ||
-        tx === "contact us" ||
-        (same && (/contact/i.test(p) || /^#contact/i.test(a.hash)))
-      )
-        return 2;
-      if (
-        tx === "home" ||
-        (same && ((p === "" && !a.hash) || p === "/home" || a.hash === "#home"))
-      )
-        return 1;
-      return 0;
-    }
+    /* a click on any link that points at a configured route (or has data-mallow="/route") brings her back */
     document.addEventListener(
       "click",
       function (e) {
-        var k = kind(e.target);
-        if (k) show(k);
+        var a = e.target.closest && e.target.closest("a,[data-mallow]");
+        if (!a) return;
+        var d = a.getAttribute("data-mallow"),
+          c = null;
+        if (d)
+          c = match(
+            d === "home" ? "/" : d === "contact" ? "/contact" : d,
+            "",
+            true,
+          );
+        else if (a.origin === location.origin)
+          c = match(a.pathname, a.hash, true);
+        if (!c) {
+          var tx = (a.textContent || "").trim().toLowerCase();
+          c =
+            tx === "home"
+              ? match("/")
+              : tx === "contact" || tx === "contact us"
+                ? match("/contact")
+                : null;
+        }
+        if (c) show(c);
       },
       true,
     );
+    /* a route change (React Router, back/forward, hash) does the same */
     function route() {
-      var p = location.pathname.replace(/\/+$/, "") || "/";
-      if (/contact/i.test(p) || /^#contact/i.test(location.hash)) show(2);
-      else if (p === "/" || p === "/home") show(1);
+      var c = match(location.pathname, location.hash);
+      if (c) show(c);
     }
     var last = location.href;
     function nav() {
@@ -285,10 +379,25 @@
     addEventListener("popstate", nav);
     addEventListener("hashchange", nav);
     window.Mallow = {
-      show: function (m) {
-        show(m === "reach" || m === 2 ? 2 : 1);
+      show: function (c) {
+        show(
+          c === "reach"
+            ? ROUTES["/contact"]
+            : (typeof c === "object" && c) || HI,
+        );
       },
       hide: hide,
+      configure: merge,
+      motions: [
+        "hi",
+        "reach",
+        "hop",
+        "happy",
+        "shy",
+        "surprised",
+        "wink",
+        "sleepy",
+      ],
     };
 
     function size() {
@@ -300,32 +409,113 @@
 
     function frame() {
       var dt = Math.min(clk.getDelta(), 0.05),
-        q = rm ? 0 : 1;
+        q = rm ? 0 : 1,
+        m = mode;
       t += dt;
-      var hi = mode === 1,
-        re = mode === 2;
+      function sm(a, b, r) {
+        return a + (b - a) * Math.min(1, dt * r);
+      }
       hop = Math.max(0, hop - dt * 0.8);
+      /* the pose each motion aims for; everything eases toward it */
+      var ey = 1,
+        eyR = -1,
+        es = 1,
+        mouth = "s",
+        mw = 1,
+        bo = 0.55,
+        bsc = 1,
+        rz = 0,
+        rx = 0,
+        bAmp = 0,
+        bSpd = 7,
+        jp = 0,
+        aR = 0.12,
+        aL = -0.12,
+        rp = [1, 0, 0.1],
+        lp = [-1, 0, 0.1],
+        lShow = 0;
+      if (m === "hi") {
+        aR = 2.3 + Math.sin(t * 9) * 0.45 * q;
+        mw = 1.3;
+      } else if (m === "reach") {
+        aR = 1.55 + Math.sin(t * 3) * 0.08 * q;
+        rx = -0.12;
+        es = 1.15;
+        mw = 1.5;
+      } else if (m === "hop") {
+        mw = 1.3;
+      } else if (m === "happy") {
+        mouth = "h";
+        aR = 2.3 + Math.sin(t * 8) * 0.4 * q;
+        aL = -2.3 - Math.sin(t * 8 + 1) * 0.4 * q;
+        lShow = 1;
+        bAmp = 0.28;
+        bSpd = 8;
+      } else if (m === "shy") {
+        ey = 0.2;
+        bo = 0.95;
+        bsc = 1.3;
+        aR = -0.35;
+        aL = 0.35;
+        rp = [0.28, -0.1, 0.95];
+        lp = [-0.28, -0.1, 0.95];
+        lShow = 1;
+        rz = Math.sin(t * 2) * 0.07 * q;
+        rx = 0.12;
+      } else if (m === "surprised") {
+        es = 1.3;
+        ey = 1.15;
+        mouth = "o";
+        aR = 1;
+        aL = -1;
+        lShow = 1;
+        jp = Math.sin(Math.min(1, (1 - hop) * 3) * Math.PI) * 0.8 * q;
+      } else if (m === "wink") {
+        eyR = 0.1;
+        mw = 1.5;
+        rz = 0.06 + Math.sin(t * 3) * 0.05 * q;
+      } else if (m === "sleepy") {
+        ey = 0.14;
+        bo = 0.4;
+        mw = 0.7;
+        rz = Math.sin(t * 1.1) * 0.09 * q;
+        rx = 0.2 + Math.sin(t * 1.1) * 0.05 * q;
+      }
+      if (eyR < 0) eyR = ey;
       var y =
         (Math.abs(Math.sin(t * 7)) * 0.45 * hop +
-          Math.abs(Math.sin(t * 2.2)) * 0.03) *
-        q;
+          Math.abs(Math.sin(t * 2.2)) * 0.03 +
+          Math.abs(Math.sin(t * bSpd)) * bAmp) *
+          q +
+        jp;
+      if (m === "sleepy") y *= 0.2;
       ch.position.y = y;
       sh.scale.setScalar(1 - y * 0.4);
-      var sq = 1 + Math.sin(t * 6) * 0.03 * q * (hi || re ? 1 : 0.3);
+      var sq = 1 + Math.sin(t * 6) * 0.03 * q * (m && m !== "sleepy" ? 1 : 0.3);
       body.scale.set(1 / Math.sqrt(sq), sq, 1 / Math.sqrt(sq));
       ch.rotation.y = mx * 0.35;
-      ch.rotation.x = re ? -0.12 : 0;
-      var at = hi
-        ? 2.3 + Math.sin(t * 9) * 0.45 * q
-        : re
-          ? 1.55 + Math.sin(t * 3) * 0.08 * q
-          : 0.12;
-      armP.rotation.z += (at - armP.rotation.z) * Math.min(1, dt * 10);
+      ch.rotation.x = sm(ch.rotation.x, rx, 8);
+      ch.rotation.z = sm(ch.rotation.z, rz, 8);
+      armP.rotation.z = sm(armP.rotation.z, aR, 10);
+      armQ.rotation.z = sm(armQ.rotation.z, aL, 10);
+      ["x", "y", "z"].forEach(function (k, i) {
+        armP.position[k] = sm(armP.position[k], rp[i], 10);
+        armQ.position[k] = sm(armQ.position[k], lp[i], 10);
+      });
+      armQ.scale.setScalar(sm(armQ.scale.x, lShow ? 1 : 0.001, 10));
       var bl = t % 3.2 < 0.12 ? 0.1 : 1;
-      eL.scale.y = bl;
-      eR.scale.y +=
-        (Math.min(bl, re ? 0.1 : 1) - eR.scale.y) * Math.min(1, dt * 20);
-      mo.scale.x = 1 + (re ? 0.5 : hi ? 0.3 : 0);
+      eL.scale.y = sm(eL.scale.y, ey * bl, 25);
+      eR.scale.y = sm(eR.scale.y, eyR * bl, 25);
+      eL.scale.x = eL.scale.z = sm(eL.scale.x, es, 10);
+      eR.scale.x = eR.scale.z = sm(eR.scale.x, es, 10);
+      mo.visible = mouth === "s";
+      mHalf.visible = mouth === "h";
+      mO.visible = mouth === "o";
+      mo.scale.x = sm(mo.scale.x, mw, 10);
+      BL.forEach(function (b) {
+        b.material.opacity = sm(b.material.opacity, bo, 6);
+        b.scale.setScalar(sm(b.scale.x, bsc, 6));
+      });
       bow.rotation.z = -0.4 + Math.sin(t * 5) * 0.08 * q;
       R.render(S, cam);
     }
@@ -344,8 +534,8 @@
       cancelAnimationFrame(raf);
     }
 
-    var p0 = location.pathname;
-    show(/contact/i.test(p0) ? 2 : 0);
+    var c0 = match(location.pathname, location.hash);
+    show(c0 && c0.onLoad ? c0 : null);
   }
 
   if (window.THREE) boot();
