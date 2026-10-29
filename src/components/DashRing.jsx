@@ -106,5 +106,5 @@ export default function RippleGrid() {
     }
   }, [reduce])
 
-  return <canvas ref={ref} aria-hidden="true" className="block h-full w-full" />
+  return <canvas ref={ref} aria-hidden="true" className="block h-full w-full opacity-60" />
 }
