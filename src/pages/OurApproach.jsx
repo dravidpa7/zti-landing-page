@@ -8,13 +8,15 @@ export default function OurApproach() {
     <>
       <PageHeader
         eyebrow="What makes us stand out?"
-        title="We don't just build. We build with Purpose & Strategy."
+        titleWidthClassName="max-w-6xl"
+        title={<>We don't just build.<br /><span className="lg:whitespace-nowrap lg:text-[clamp(2.5rem,5vw,3.75rem)]">We build with Purpose &amp; Strategy.</span></>}
       />
 
-      <section className="bg-white py-12 md:py-24">
+      <section className="bg-white py-12 md:py-18">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
-          <div className="ml-auto max-w-4xl space-y-6 text-lg leading-relaxed text-ink/70 md:text-xl">
 
+          {/* Paragraph content */}
+          <div className="ml-8 max-w-4xl space-y-7 text-lg leading-relaxed text-ink/70 md:ml-20 lg:ml-32 md:text-xl">
             <m.p {...reveal}>
               A website is not just a digital presence. It is an extension of your business, your vision, and everything you aspire to become. At Aaryan Tech, we believe that building a successful digital presence starts long before writing a single line of code.
             </m.p>
