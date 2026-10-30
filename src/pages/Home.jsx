@@ -1,5 +1,6 @@
 import { useContent } from '../context/ContentContext'
 import Hero from '../components/Hero'
+import Approach from '../components/Approach'
 import Divider from '../components/Divider'
 import Products from '../components/Products'
 import IconStrip from '../components/IconStrip'
@@ -10,6 +11,7 @@ export default function Home() {
   const c = useContent()
   return (<>
     <Hero company={c.company} />
+    <Approach />
     <Divider left="What we build" right={`${c.products.length} products`} />
     <Products items={c.products} />
     <IconStrip />

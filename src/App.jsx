@@ -12,6 +12,7 @@ import { ProductsPage, ProductDetail } from './pages/Products'
 import { ServicesPage, ServiceDetail } from './pages/Services'
 import { BlogsPage, BlogPost } from './pages/Blogs'
 import { Careers, Training } from './pages/Company'
+import OurApproach from './pages/OurApproach'
 import NotFound from './pages/NotFound'
 export default function App() {
   const content = useContent()
@@ -30,6 +31,7 @@ export default function App() {
         <Route path="/blogs/:id" element={<BlogPost />} />
         <Route path="/careers" element={<Careers />} />
         <Route path="/training" element={<Training />} />
+        <Route path="/our-approach" element={<OurApproach />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
