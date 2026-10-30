@@ -10,7 +10,8 @@ const steps = [
   { title: 'Create', description: 'We design, build, and refine a solution with your team.' },
   { title: 'Grow', description: 'We launch, learn from real feedback, and keep improving together.' },
 ]
-const dots = ['bg-brand-blue', 'bg-brand-red', 'bg-brand-yellow', 'bg-brand-orange', 'bg-brand-blue']
+// one colour, five shades: deep blue -> bright blue
+const dots = ['bg-[#2F4FC4]', 'bg-[#3B63E0]', 'bg-[#4F74F0]', 'bg-[#7993F4]', 'bg-[#A9BBFA]']
 
 // One step. It brightens when the line reaches it (p = scroll progress of the list, 0 to 1).
 function Step({ step, i, n, p }) {
