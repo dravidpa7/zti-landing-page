@@ -2,13 +2,15 @@
    Route-driven: each route can have its own message and motion (see ROUTES below).
    On the home page ("/") she falls from the top of the screen on every load, hits the
    ground, lies dazed, gets up and says "Hi, I'm Marsheee!".
-   Click her -> says the current route's line (default "Hii!"). Hides after 5s without interaction with her.
+   Click her -> says the current route's line (default "Hii!").
+   After 7s without interaction with her: desktop -> shrinks to a small size (hover/click/focus
+   brings her back to normal size); mobile -> hides off-screen.
    <script src="/mallow-widget.js" data-contact="/contact" defer></script> */
 (function () {
   if (window.__mallow) return;
   window.__mallow = 1;
   var CS = document.currentScript,
-    IDLE = 5000;
+    IDLE = 7000;
   var CONTACT =
     window.MALLOW_CONTACT || (CS && CS.dataset.contact) || "/contact";
 
@@ -21,8 +23,9 @@
     var sr = host.attachShadow({ mode: "open" });
     sr.innerHTML =
       "<style>:host{display:block}" +
-      ".w{--s:150px;position:relative;width:var(--s);transform:translateX(160%);opacity:0;visibility:hidden;transition:transform .45s cubic-bezier(.3,.7,.3,1),opacity .3s,visibility 0s .45s}" +
+      ".w{--s:150px;position:relative;width:var(--s);transform-origin:100% 100%;transform:translateX(160%);opacity:0;visibility:hidden;transition:transform .45s cubic-bezier(.3,.7,.3,1),opacity .3s,visibility 0s .45s}" +
       ".w.on{transform:none;opacity:1;visibility:visible;transition:transform .45s cubic-bezier(.3,.7,.3,1),opacity .3s}" +
+      ".w.on.mini{transform:scale(.45)}" +
       ".c{display:block;width:var(--s);height:var(--s);padding:0;margin:0;border:0;background:none;cursor:pointer}" +
       "canvas{display:block;width:100%;height:100%}" +
       ".b{position:absolute;right:8px;bottom:calc(100% - 4px);font-family:inherit;font-weight:500;font-size:14px;line-height:1.2;letter-spacing:-.01em;background:var(--ink);color:var(--on);padding:9px 16px;border-radius:999px;text-decoration:none;white-space:nowrap;opacity:0;transform:translateY(6px);transition:opacity .2s,transform .2s;pointer-events:none}" +
@@ -297,6 +300,22 @@
       return 0.85 * Math.abs(c) + 1.05 * Math.abs(s) - 0.85 * c;
     }
 
+    /* mobile = small screen or touch-first device: she hides there; on desktop she only shrinks */
+    function isMob() {
+      return matchMedia("(max-width:600px), (pointer:coarse)").matches;
+    }
+    /* desktop idle state: small, no bubble, still visible */
+    function small() {
+      clearTimeout(timer);
+      bub.classList.remove("s");
+      mode = "";
+      w.classList.add("mini");
+    }
+    /* back to normal size */
+    function wake() {
+      if (w.classList.contains("mini")) w.classList.remove("mini");
+    }
+
     function say(c) {
       mode = (c && c.motion) || "";
       hop = 1;
@@ -318,6 +337,7 @@
       if (intro) return;
       on = true;
       w.classList.add("on");
+      wake();
       say(c);
       arm_();
       start();
@@ -335,6 +355,12 @@
       start();
     }
     function hide() {
+      /* desktop: just get small and stay in the corner */
+      if (!isMob()) {
+        small();
+        return;
+      }
+      /* mobile: slide away and stop rendering */
       on = false;
       clearTimeout(timer);
       w.classList.remove("on");
@@ -349,7 +375,10 @@
     });
     ["pointermove", "focusin"].forEach(function (ev) {
       w.addEventListener(ev, function () {
-        if (on) arm_();
+        if (on) {
+          wake();
+          arm_();
+        }
       });
     });
     addEventListener("pointermove", function (e) {

@@ -45,7 +45,19 @@ export function ProductPanel({ product: p, className = '' }) {
     <m.div ref={ref} style={{ rotateX: rx, rotateY: ry, transformPerspective: 900 }} onPointerMove={onMove} onPointerLeave={onLeave} initial={{ opacity: 0, scale: 0.96, y: 24 }} whileInView={{ opacity: 1, scale: 1, y: 0 }}
       viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.8, ease }}
       className={`relative aspect-square w-full overflow-hidden rounded-[2rem] ${t.panel} ${className}`}>
-      {p.image ? (
+      {p.video ? (
+        <video
+          src={p.video}
+          autoPlay
+          muted
+          loop
+          playsInline
+          controls={false}
+          aria-hidden="true"
+          tabIndex={-1}
+          className="h-full w-full object-cover pointer-events-none"
+        />
+      ) : p.image ? (
         <img src={p.image} alt={`${p.name} screenshot`} loading="lazy" className="h-full w-full object-cover" />
       ) : (
         <m.div style={{ y }} className="absolute inset-x-[12%] -bottom-[8%] top-[22%]"><Mock t={t} name={p.name} /></m.div>
