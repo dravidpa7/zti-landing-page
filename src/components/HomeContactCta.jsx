@@ -17,7 +17,7 @@ export default function HomeContactCta() {
   ].filter(Boolean)
 
   return (
-    <section className="bg-white py-20 md:py-28">
+    <section className="bg-ground py-20 md:py-28">
       <div className="mx-auto max-w-6xl px-5">
         <m.span {...line} aria-hidden="true" className="block h-px w-full origin-left bg-ink/20" />
         <div className="grid gap-12 pt-16 md:grid-cols-12">
@@ -37,18 +37,18 @@ export default function HomeContactCta() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Button to="/contact">Contact now</Button>
               <m.a href={mailto} whileHover={{ y: -2 }} whileTap={{ scale: 0.96 }} transition={{ duration: 0.2 }}
-                className="inline-flex items-center gap-2 rounded-full border border-ink/20 px-6 py-3 text-base font-medium transition-colors hover:bg-ink hover:text-white">
+                className="inline-flex items-center gap-2 rounded-full border border-ink/20 px-6 py-3 text-base font-medium transition-colors hover:bg-ink hover:text-ground">
                 <Mail size={16} aria-hidden="true" /> Email us
               </m.a>
             </div>
 
-            <ul className="mt-12 border-b border-black/10">
+            <ul className="mt-12 border-b border-ink/10">
               {links.map(({ icon: Icon, label, href, external }) => (
                 <li key={href}>
                   <m.a href={href} whileHover={{ x: 6 }} whileTap={{ scale: 0.99 }}
                     {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
-                    className="group flex items-center gap-4 border-t border-black/10 py-4 text-lg">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-black/5 bg-tint transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
+                    className="group flex items-center gap-4 border-t border-ink/10 py-4 text-lg">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ink/10 bg-surface transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
                       <Icon size={18} strokeWidth={1.6} aria-hidden="true" />
                     </span>
                     {label}

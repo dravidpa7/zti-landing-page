@@ -28,7 +28,7 @@ export default function RippleGrid() {
       ctx.clearRect(0, 0, w, h)
       ripples = ripples.filter((r) => now - r.t < r.life)
       const hot = []
-      ctx.fillStyle = 'rgba(17,17,17,0.16)'
+      ctx.fillStyle = 'rgba(244,244,245,0.15)'
       ctx.beginPath()
       for (const [x, y] of dots) {
         let best = null, bw = 0

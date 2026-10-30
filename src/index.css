@@ -1,4 +1,9 @@
 @tailwind base; @tailwind components; @tailwind utilities;
+/* Dark theme tokens (RGB triplets so Tailwind opacity like bg-ink/10 works) */
+:root { color-scheme: dark; --ground: 10 10 11; --surface: 19 19 21; --deep: 5 5 6; --ink: 244 244 245; }
+::selection { background: rgb(var(--ink) / 0.9); color: rgb(var(--ground)); }
+/* Chrome autofill would paint a light box; keep fields dark */
+input:-webkit-autofill, textarea:-webkit-autofill { -webkit-text-fill-color: rgb(var(--ink)); box-shadow: 0 0 0 1000px rgb(var(--surface)) inset; caret-color: rgb(var(--ink)); }
 html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 @keyframes spin-slow { to { transform: rotate(360deg); } }
 .spin-slow { animation: spin-slow 180s linear infinite; will-change: transform; }

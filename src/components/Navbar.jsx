@@ -41,7 +41,7 @@ export default function Navbar() {
 
   return (
     <m.header animate={{ y: hidden && !open && !mobile ? '-100%' : 0 }} transition={{ duration: 0.3, ease }}
-      onMouseLeave={() => setOpen(null)} className="sticky top-0 z-20 border-b border-black/5 bg-white/95 backdrop-blur">
+      onMouseLeave={() => setOpen(null)} className="sticky top-0 z-20 border-b border-ink/10 bg-ground/90 backdrop-blur">
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
         <Link to="/" className="group flex items-center gap-2 text-lg font-medium"><Mark />Aaryan</Link>
         <ul className="hidden items-center gap-8 text-[15px] md:flex">
@@ -69,13 +69,13 @@ export default function Navbar() {
       <AnimatePresence>
         {cur && (
           <m.div key="panel" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2, ease }} className="absolute left-0 top-full hidden w-full border-b border-black/5 bg-white md:block">
+            transition={{ duration: 0.2, ease }} className="absolute left-0 top-full hidden w-full border-b border-ink/10 bg-ground md:block">
             <div className="mx-auto grid max-w-6xl gap-10 px-5 py-10 md:grid-cols-12">
               <div className="md:col-span-4">
                 <p className="text-3xl font-semibold leading-tight tracking-[-0.02em]">{cur.heading}</p>
-                <Link to={cur.to} className="mt-8 inline-flex rounded-full bg-tint px-5 py-2.5 text-[15px] transition-colors hover:bg-black/10">See overview</Link>
+                <Link to={cur.to} className="mt-8 inline-flex rounded-full bg-surface px-5 py-2.5 text-[15px] transition-colors hover:bg-ink/10">See overview</Link>
               </div>
-              <div className="md:col-span-5 md:border-l md:border-black/10 md:pl-10">
+              <div className="md:col-span-5 md:border-l md:border-ink/10 md:pl-10">
                 <p className="mb-4 text-sm text-ink/60">{cur.list}</p>
                 <ul className="space-y-1">
                   {cur.items.map((i) => (
@@ -88,7 +88,7 @@ export default function Navbar() {
         )}
         {mobile && (
           <m.ul key="mobile" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2, ease }} className="absolute left-0 top-full w-full space-y-1 border-b border-black/5 bg-white px-5 py-6 text-2xl font-medium md:hidden">
+            transition={{ duration: 0.2, ease }} className="absolute left-0 top-full w-full space-y-1 border-b border-ink/10 bg-ground px-5 py-6 text-2xl font-medium md:hidden">
             {[...Object.values(menus).map((mn) => [mn.label, mn.to]), ...plain, ['Contact', '/contact']].map(([l, to]) => (
               <li key={to}><Link to={to} className="block py-2">{l}</Link></li>
             ))}

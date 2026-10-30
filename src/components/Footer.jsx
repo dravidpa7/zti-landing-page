@@ -11,7 +11,7 @@ export default function Footer() {
     ['Company', null, [['Careers', '/careers'], ['Corporate training', '/training'], ['Contact', '/contact']]],
   ]
   return (
-    <footer className="overflow-hidden bg-ink px-5 pb-6 pt-20 text-white">
+    <footer className="overflow-hidden border-t border-ink/10 bg-deep px-5 pb-6 pt-20 text-white">
       <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-4">
         {cols.map(([title, to, links]) => (
           <div key={title}>

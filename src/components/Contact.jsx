@@ -41,22 +41,22 @@ export default function Contact() {
 
   const note = 'Our team will reach out to you within 24 hours.'
   return (
-    <section id="contact" className="bg-tint py-28 md:py-48">
+    <section id="contact" className="bg-surface py-28 md:py-48">
       <div className="mx-auto grid max-w-6xl gap-12 px-5 md:grid-cols-12">
         <m.h2 {...reveal} className="text-4xl font-medium leading-[1.02] tracking-[-0.03em] md:col-span-6 md:text-7xl">Tell us what you are building.</m.h2>
         <m.div {...reveal} className="md:col-span-5 md:col-start-8">
           {status === 'done' || status === 'mail' ? (
             <div role="status" className="space-y-3 text-lg">
-              <p className="flex items-center gap-3 text-2xl font-medium"><m.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 14 }} className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white"><Check size={18} /></m.span>{status === 'done' ? `Thank you, ${f.name}.` : 'Almost done.'}</p>
+              <p className="flex items-center gap-3 text-2xl font-medium"><m.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 14 }} className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-ink text-ground"><Check size={18} /></m.span>{status === 'done' ? `Thank you, ${f.name}.` : 'Almost done.'}</p>
               <p>{status === 'done' ? note : `Your email app should have opened with your message. Press send there to finish. ${note}`}</p>
               <button type="button" onClick={() => { setF(empty); setStatus('idle') }} className="underline underline-offset-4">Send another enquiry</button>
             </div>
           ) : (
             <form onSubmit={onSubmit} className="space-y-6">
-              <div role="group" aria-label="Enquiry type" className="inline-flex rounded-full bg-black/5 p-1 text-[15px]">
+              <div role="group" aria-label="Enquiry type" className="inline-flex rounded-full bg-ink/5 p-1 text-[15px]">
                 {['Individual', 'Organisation'].map((t) => (
                   <button key={t} type="button" aria-pressed={type === t} onClick={() => setType(t)}
-                    className={`inline-flex items-center gap-2 rounded-full px-5 py-2 transition-colors duration-200 ${type === t ? 'bg-ink text-white' : 'hover:bg-black/5'}`}>{t === 'Individual' ? <User size={16} /> : <Building2 size={16} />}{t}</button>
+                    className={`inline-flex items-center gap-2 rounded-full px-5 py-2 transition-colors duration-200 ${type === t ? 'bg-ink text-ground' : 'hover:bg-ink/5'}`}>{t === 'Individual' ? <User size={16} /> : <Building2 size={16} />}{t}</button>
                 ))}
               </div>
               <Field><span className="sr-only">Name</span>
@@ -79,7 +79,7 @@ export default function Contact() {
               <Field><span className="sr-only">What do you need?</span>
                 <textarea required rows={4} className={base} placeholder="What do you need?" value={f.message} onChange={set('message')} /></Field>
               <m.button type="submit" disabled={status === 'sending'} whileHover={{ y: -2 }} whileTap={{ scale: 0.96 }} transition={{ duration: 0.2 }}
-                className="group inline-flex items-center rounded-full bg-ink px-6 py-3 text-base font-medium text-white disabled:opacity-60">
+                className="group inline-flex items-center rounded-full bg-ink px-6 py-3 text-base font-medium text-ground disabled:opacity-60">
                 {status === 'sending' ? 'Sending…' : <>Submit<Send size={16} className="ml-2 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-1" /></>}
               </m.button>
               {status === 'error' && <p role="alert" className="text-brand-red">Something went wrong. Please try again, or email {toEmail}.</p>}

@@ -6,9 +6,9 @@ import IconBadge from './IconBadge'
 
 // Panel colours per tone (set "tone" in data.json). Classes are listed in full so Tailwind keeps them.
 const tones = {
-  light: { panel: 'bg-[#EAEFFD]', win: 'bg-white border-black/5', bar: 'bg-black/10', cap: 'text-ink/50' },
+  light: { panel: 'bg-[#141B33]', win: 'bg-white/[0.07] border-white/10', bar: 'bg-white/15', cap: 'text-white/50' },
   dark:  { panel: 'bg-black',     win: 'bg-white/10 border-white/10', bar: 'bg-white/20', cap: 'text-white/50' },
-  warm:  { panel: 'bg-[#FFF3D6]', win: 'bg-white border-black/5', bar: 'bg-black/10', cap: 'text-ink/50' },
+  warm:  { panel: 'bg-[#251D0E]', win: 'bg-white/[0.07] border-white/10', bar: 'bg-white/15', cap: 'text-white/50' },
 }
 
 // Stand-in for a product screenshot. Replaced by <img> once "image" is set in data.json.
@@ -44,7 +44,7 @@ export function ProductPanel({ product: p, className = '' }) {
   return (
     <m.div ref={ref} style={{ rotateX: rx, rotateY: ry, transformPerspective: 900 }} onPointerMove={onMove} onPointerLeave={onLeave} initial={{ opacity: 0, scale: 0.96, y: 24 }} whileInView={{ opacity: 1, scale: 1, y: 0 }}
       viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.8, ease }}
-      className={`relative aspect-square w-full overflow-hidden rounded-[2rem] ${t.panel} ${className}`}>
+      className={`relative aspect-square w-full overflow-hidden rounded-[2rem] ring-1 ring-inset ring-white/10 ${t.panel} ${className}`}>
       {p.image ? (
         <img src={p.image} alt={`${p.name} screenshot`} loading="lazy" className="h-full w-full object-cover" />
       ) : (
@@ -56,7 +56,7 @@ export function ProductPanel({ product: p, className = '' }) {
 
 export default function ProductShowcase({ product: p }) {
   return (
-    <section id={`product-${p.id}`} className="bg-white py-16 md:py-28">
+    <section id={`product-${p.id}`} className="bg-ground py-16 md:py-28">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 md:grid-cols-12">
         <m.div {...reveal} className="md:col-span-5">
           <p className="mb-4">{p.tag}  <IconBadge name={p.icon} className="mb-6" /></p>

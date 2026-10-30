@@ -7,7 +7,7 @@ export default function Button({ children, to, href, className = '' }) {
   return (
     <A {...(to ? { to } : { href })} initial="rest" whileHover="hover" whileTap={{ scale: 0.96 }}
       variants={{ rest: { y: 0 }, hover: { y: -2 } }} transition={{ duration: 0.2 }}
-      className={`inline-flex items-center rounded-full bg-ink px-6 py-3 text-base font-medium text-white ${className}`}>
+      className={`inline-flex items-center rounded-full bg-ink px-6 py-3 text-base font-medium text-ground ${className}`}>
       {children}
       <m.span variants={arrow} transition={{ duration: 0.2 }} className="overflow-hidden" aria-hidden="true">→</m.span>
     </A>

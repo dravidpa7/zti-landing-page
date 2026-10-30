@@ -8,7 +8,7 @@ export function BlogsPage() {
   const { blogs } = useContent()
   return (<>
     <PageHeader eyebrow="Blogs" title="Notes from our engineers." />
-    <section className="bg-white py-16 md:py-24"><div className="mx-auto max-w-6xl px-5"><BlogList items={blogs} /></div></section>
+    <section className="bg-ground py-16 md:py-24"><div className="mx-auto max-w-6xl px-5"><BlogList items={blogs} /></div></section>
   </>)
 }
 export function BlogPost() {
@@ -18,7 +18,7 @@ export function BlogPost() {
   if (!b) return <NotFound />
   return (<>
     <PageHeader eyebrow={`${formatDate(b.date)} · ${b.readTime}`} title={b.title} />
-    <article className="bg-white py-16 md:py-24"><div className="mx-auto max-w-6xl px-5">
+    <article className="bg-ground py-16 md:py-24"><div className="mx-auto max-w-6xl px-5">
       <div className="max-w-2xl space-y-6 text-lg leading-8">{b.body.map((t, i) => <p key={i}>{t}</p>)}</div>
       <Link to="/blogs" className="mt-12 inline-block underline-offset-4 hover:underline">← All blogs</Link>
     </div></article>
