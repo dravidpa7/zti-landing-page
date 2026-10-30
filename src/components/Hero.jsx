@@ -21,11 +21,29 @@ export default function Hero({ company }) {
       <m.div style={{ scale: ringScale, opacity: ringOpacity }} className="absolute inset-0"><DashRing /></m.div>
       <m.div style={{ y: textY }} className="relative">
         <m.div {...fade(0)} className="mb-6 flex items-center justify-center gap-2 text-xl font-medium"><Mark size={28} />Aaryan Tech</m.div>
-        <m.h1 aria-label={company.tagline} variants={wordsIn} initial="h" animate="v"
-          className="mx-auto max-w-4xl text-5xl font-medium leading-[0.98] tracking-[-0.04em] md:text-8xl">
+        <m.h1
+          aria-label={company.tagline}
+          variants={wordsIn}
+          initial="h"
+          animate="v"
+          className="mx-auto max-w-6xl font-medium leading-[1.05] tracking-[-0.04em]"
+        >
           {company.tagline.split(' ').map((w, i) => (
-            <span key={i} aria-hidden="true" className="inline-block overflow-hidden pb-[0.12em] align-bottom pr-[0.25em] -mb-[0.12em]">
-              <m.span variants={wordIn} className="inline-block">{w}</m.span>
+            <span key={i}>
+              {i === 6 && <br />}
+
+              <span
+                aria-hidden="true"
+                className={`inline-block overflow-hidden align-bottom pb-[0.12em] pr-[0.25em] -mb-[0.12em]
+                  ${i <= 5
+                    ? "text-[2.5rem] md:text-6xl"
+                    : "text-[1.5rem] md:text-4xl"
+                  }`}
+              >
+                <m.span variants={wordIn} className="inline-block">
+                  {w}
+                </m.span>
+              </span>
             </span>
           ))}
         </m.h1>
