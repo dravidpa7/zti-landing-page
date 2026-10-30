@@ -59,8 +59,7 @@ export default function ProductShowcase({ product: p }) {
     <section id={`product-${p.id}`} className="bg-white py-16 md:py-28">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 md:grid-cols-12">
         <m.div {...reveal} className="md:col-span-5">
-          <IconBadge name={p.icon} className="mb-6" />
-          <p className="mb-4">{p.tag}</p>
+          <p className="mb-4">{p.tag}  <IconBadge name={p.icon} className="mb-6" /></p>
           <h3 className="text-4xl font-medium tracking-[-0.03em] md:text-5xl">{p.name}</h3>
           <p className="mt-5 max-w-md text-lg leading-relaxed text-ink/70">{p.text}</p>
           <Button to={`/products/${p.id}`} className="mt-8">Learn more</Button>
