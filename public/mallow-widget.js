@@ -65,10 +65,33 @@
     var dl = new T.DirectionalLight(0xffffff, 0.7);
     dl.position.set(3, 6, 5);
     S.add(dl);
+    /* CHARACTER COLORS: change the defaults here, or at runtime with Mallow.setColor({...}).
+       body = main body + arms, bow = ribbon, blush = cheeks, ink = outline + eyes + mouth, glow = ground shadow.
+       Accepts "#rrggbb", css names or 0xRRGGBB numbers.
+       Other ways: window.MALLOW_COLORS = {...}, data-body / data-bow / data-blush / data-ink / data-glow
+       on the script tag, or a per-route "color" key inside ROUTES. */
+    var COLORS = {
+      body: 0xfff1ea,
+      bow: 0xf58fa3,
+      blush: 0xf79aa6,
+      ink: 0x3b1a1a,
+      glow: 0xe39aa9,
+    };
+    function pick(o) {
+      if (!o) return;
+      for (var k in COLORS)
+        if (Object.prototype.hasOwnProperty.call(o, k) && o[k] != null && o[k] !== "")
+          COLORS[k] = o[k];
+    }
+    pick(window.MALLOW_COLORS);
+    pick(CS && CS.dataset);
     function M(c) {
       return new T.MeshStandardMaterial({ color: c, roughness: 0.7 });
     }
-    var BR = new T.MeshBasicMaterial({ color: 0x3b1a1a, side: T.BackSide });
+    var matBody = M(COLORS.body),
+      matBow = M(COLORS.bow),
+      matInk = M(COLORS.ink);
+    var BR = new T.MeshBasicMaterial({ color: COLORS.ink, side: T.BackSide });
     function ol(m, s) {
       var o = new T.Mesh(m.geometry, BR);
       o.scale.setScalar(s);
@@ -101,15 +124,27 @@
     var sc = document.createElement("canvas");
     sc.width = sc.height = 64;
     var sg = sc.getContext("2d"),
-      gr = sg.createRadialGradient(32, 32, 2, 32, 32, 32);
-    gr.addColorStop(0, "rgba(227,154,169,.7)");
-    gr.addColorStop(1, "rgba(227,154,169,0)");
-    sg.fillStyle = gr;
-    sg.fillRect(0, 0, 64, 64);
+      shTex = new T.CanvasTexture(sc);
+    function drawShadow(col) {
+      var c = new T.Color(col),
+        rgb =
+          Math.round(c.r * 255) +
+          "," +
+          Math.round(c.g * 255) +
+          "," +
+          Math.round(c.b * 255),
+        g = sg.createRadialGradient(32, 32, 2, 32, 32, 32);
+      g.addColorStop(0, "rgba(" + rgb + ",.7)");
+      g.addColorStop(1, "rgba(" + rgb + ",0)");
+      sg.clearRect(0, 0, 64, 64);
+      sg.fillStyle = g;
+      sg.fillRect(0, 0, 64, 64);
+      shTex.needsUpdate = true;
+    }
     var sh = new T.Mesh(
       new T.PlaneGeometry(2.8, 2.8),
       new T.MeshBasicMaterial({
-        map: new T.CanvasTexture(sc),
+        map: shTex,
         transparent: true,
         depthWrite: false,
       }),
@@ -120,8 +155,8 @@
     var body = new T.Group();
     body.position.y = 0.85;
     ch.add(body);
-    body.add(ol(new T.Mesh(rbox(2.1, 1.7, 1.9, 0.5, 16), M(0xfff1ea)), 1.035));
-    var dk = M(0x3b1a1a);
+    body.add(ol(new T.Mesh(rbox(2.1, 1.7, 1.9, 0.5, 16), matBody), 1.035));
+    var dk = matInk;
     function eye(x) {
       var e = new T.Group(),
         a = new T.Mesh(new T.SphereGeometry(0.16, 20, 16), dk);
@@ -144,7 +179,7 @@
       var b = new T.Mesh(
         new T.CircleGeometry(0.17, 20),
         new T.MeshBasicMaterial({
-          color: 0xf79aa6,
+          color: COLORS.blush,
           transparent: true,
           opacity: 0.55,
         }),
@@ -170,7 +205,7 @@
     mO.visible = false;
     body.add(mO);
     var bow = new T.Group(),
-      pk = M(0xf58fa3);
+      pk = matBow;
     [-1, 1].forEach(function (s) {
       var m = ol(new T.Mesh(new T.SphereGeometry(0.22, 16, 12), pk), 1.12);
       m.scale.set(1.2, 0.8, 0.5);
@@ -184,7 +219,7 @@
     body.add(bow);
     var armP = new T.Group(),
       arm = ol(
-        new T.Mesh(new T.SphereGeometry(0.2, 16, 12), M(0xfff1ea)),
+        new T.Mesh(new T.SphereGeometry(0.2, 16, 12), matBody),
         1.12,
       );
     arm.scale.set(1, 1.8, 1);
@@ -195,7 +230,7 @@
     body.add(armP);
     var armQ = new T.Group(),
       arm2 = ol(
-        new T.Mesh(new T.SphereGeometry(0.2, 16, 12), M(0xfff1ea)),
+        new T.Mesh(new T.SphereGeometry(0.2, 16, 12), matBody),
         1.12,
       );
     arm2.scale.set(1, 1.8, 1);
@@ -206,8 +241,25 @@
     armQ.scale.setScalar(0.001);
     body.add(armQ);
 
+    /* apply colors to the live materials. "over" = optional per-route overrides */
+    function paint(over) {
+      var cur = {},
+        k;
+      for (k in COLORS)
+        cur[k] = over && over[k] != null && over[k] !== "" ? over[k] : COLORS[k];
+      matBody.color.set(cur.body);
+      matBow.color.set(cur.bow);
+      matInk.color.set(cur.ink);
+      BR.color.set(cur.ink);
+      BL.forEach(function (b) {
+        b.material.color.set(cur.blush);
+      });
+      drawShadow(cur.glow);
+    }
+    paint();
+
     /* ROUTES: path -> what she does. Keys: '/pricing', '/blog/*' (prefix), '#contact', '*' (fallback).
-       Value: { say, motion, href, onLoad }. motion: hi, reach, hop, happy, shy, surprised, wink, sleepy. Add yours with window.MALLOW_ROUTES or Mallow.configure({...}) */
+       Value: { say, motion, href, onLoad, color }. color (optional) = e.g. { body: "#cfe8ff", bow: "#5b8def" }. motion: hi, reach, hop, happy, shy, surprised, wink, sleepy. Add yours with window.MALLOW_ROUTES or Mallow.configure({...}) */
     var ROUTES = {
       "/": { say: "Hii!", motion: "hi" },
       "/products": { say: "Take a look around!", motion: "hop", onLoad: true },
@@ -317,6 +369,7 @@
     }
 
     function say(c) {
+      paint(c && c.color);
       mode = (c && c.motion) || "";
       hop = 1;
       if (!c || !c.say) {
@@ -446,6 +499,10 @@
       },
       hide: hide,
       configure: merge,
+      setColor: function (o) {
+        pick(o);
+        paint();
+      },
       motions: [
         "hi",
         "reach",
